@@ -1,4 +1,11 @@
-import { Component, OnInit, signal, WritableSignal } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  signal,
+  WritableSignal,
+} from '@angular/core';
+import { FaceSnap } from '../models/face-snap';
 
 @Component({
   selector: 'app-face-snap',
@@ -8,30 +15,21 @@ import { Component, OnInit, signal, WritableSignal } from '@angular/core';
   styleUrl: './face-snap.component.css',
 })
 export class FaceSnapComponent implements OnInit {
-  title!: string;
-  description!: string;
-  createdAt!: Date;
-  likes!: WritableSignal<number>;
-  imageUrl!: string;
+  @Input() faceSnap!: FaceSnap;
+
   userHasLiked!: WritableSignal<boolean>;
 
   ngOnInit(): void {
-    this.title = 'New York Trip !';
-    this.description = 'My NY Trip !';
-    this.createdAt = new Date();
-    this.likes = signal(0);
-    this.imageUrl =
-      'https://cdn.pixabay.com/photo/2015/05/31/16/03/teddy-bear-792273_1280.jpg';
     this.userHasLiked = signal(false);
   }
 
-  like() {
-    this.likes.update((v) => v + 1);
-    this.userHasLiked.set(true);
-  }
-
-  dislike() {
-    this.likes.update((v) => v - 1);
-    this.userHasLiked.set(false);
+  toggleLike() {
+    if (this.userHasLiked()) {
+      this.faceSnap.likes.update((v) => v - 1);
+      this.userHasLiked.set(false);
+    } else {
+      this.faceSnap.likes.update((v) => v + 1);
+      this.userHasLiked.set(true);
+    }
   }
 }
